@@ -2,7 +2,10 @@ import cv2
 import mediapipe as mp
 from mediapipe.tasks.python import vision
 import pyautogui
+from math import *
 
+#Const
+Sensitivity = 3
 
 def get_ratio(cap):
     pyautogui.sleep(1)
@@ -18,6 +21,20 @@ def get_ratio(cap):
         Ratio = R_width
     return Ratio
 
+def hand_tremor_compensation(px,py,cx,cy,frame,ratio,sens = Sensitivity):
+    dx = sqrt(pow(px-cx,2))
+    dy = sqrt(pow(py-cy,2))
+    dxy = sqrt(dx*dx+dy*dy)
+    if dxy < sens:
+        pass
+    else:
+        cv2.circle(frame,(cx,cy),3,(0,255,0),-1)
+        pyautogui.moveTo(cx*ratio,cy*ratio)
+px = False
+py = False
+cx = False
+cy = False
+
 model_path = 'model/hand_landmarker.task'
 
 base_options = mp.tasks.BaseOptions(model_asset_path=model_path)
@@ -29,7 +46,7 @@ option = vision.HandLandmarkerOptions(
 landmarker = vision.HandLandmarker.create_from_options(option)
 
 cap = cv2.VideoCapture(0)
-Ratio = get_ratio(cap)
+ratio = get_ratio(cap)
 
 timestamp_ms = 0
 
@@ -49,11 +66,11 @@ while cap.isOpened():
         for landmarks in result.hand_landmarks:
 
             cx, cy = int(landmarks[8].x * frame.shape[1]), int(landmarks[8].y * frame.shape[0])
-            cv2.circle(fliped, (cx,cy), 3, (0,255,0), -1)
-            pyautogui.moveTo(cx*Ratio,cy*Ratio)
-        
+            hand_tremor_compensation(px,py,cx,cy,fliped,ratio)
+
     cv2.imshow("Handmarker", fliped)
-    pyautogui.sleep(0.1)
+    px = cx
+    py = cy
 
     if cv2.waitKey(1) == ord('q'):
         break
