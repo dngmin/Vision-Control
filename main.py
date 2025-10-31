@@ -6,6 +6,7 @@ from math import *
 
 #Const
 Sensitivity = 3
+Gesture_Accuracy = 5
 
 def get_ratio(cap):
     #webcam size
@@ -59,6 +60,15 @@ py = False
 cx = False
 cy = False
 
+Gesture_Accuracy_list = []
+def clear_list(target_list):
+    target_list = []
+    for i in range(0,Gesture_Accuracy):
+        target_list.append(False)
+    return target_list
+
+Gesture_Accuracy_list = clear_list(Gesture_Accuracy_list)
+
 model_path = 'model/hand_landmarker.task'
 
 base_options = mp.tasks.BaseOptions(model_asset_path=model_path)
@@ -103,14 +113,18 @@ while cap.isOpened():
                 fingertip_points.append((ix,iy))
 
     gesture = gesture_detection(fingertip_points)
-    if gesture == False:
-        pass
-    elif gesture == "D":
-        pyautogui.doubleClick()
-    elif gesture == "L":
-        pyautogui.leftClick()
-    elif gesture == "R":
-        pyautogui.rightClick()
+    Gesture_Accuracy_list.pop(0)
+    Gesture_Accuracy_list.append(gesture)
+    if len(Gesture_Accuracy_list) == Gesture_Accuracy:
+        if Gesture_Accuracy_list.count("D") == Gesture_Accuracy:
+            pyautogui.doubleClick()
+            Gesture_Accuracy_list = clear_list(Gesture_Accuracy_list)
+        elif Gesture_Accuracy_list.count("L") == Gesture_Accuracy:
+            pyautogui.leftClick()
+            Gesture_Accuracy_list = clear_list(Gesture_Accuracy_list)
+        elif Gesture_Accuracy_list.count("R") == Gesture_Accuracy:
+            pyautogui.rightClick()
+            Gesture_Accuracy_list = clear_list(Gesture_Accuracy_list)
 
     cv2.imshow("Handmarker", fliped)
     px = cx
