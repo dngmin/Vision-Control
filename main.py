@@ -5,16 +5,25 @@ import pyautogui
 from math import *
 
 #Const
-Sensitivity = 3
+Sensitivity = 10
 Gesture_Accuracy = 5
+try:
+    print("お使いのモニターの種類を選択してください")
+    print("1 : Window PC または 一般外部モニター")
+    print("2 : Mac または 4K高画質モニター")
+    model = int(input())
+except:
+    print("1 または 2を選択してください")
+    exit()
 
-def get_ratio(cap):
+
+def get_ratio(cap, model = model):
     #webcam size
     C_width, C_height = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH)), int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     #Monitor size
     M_width, M_height = pyautogui.size()
     #monitor/webcam ratio
-    R_width, R_height = int(M_width/C_width), int(M_height/C_height)
+    R_width, R_height = int(M_width*model/C_width), int(M_height*model/C_height)
     if R_height > R_width:
         Ratio = R_height
     else:
@@ -69,7 +78,7 @@ def clear_list(target_list):
 
 Gesture_Accuracy_list = clear_list(Gesture_Accuracy_list)
 
-model_path = 'model/hand_landmarker.task'
+model_path = 'assets/model/hand_landmarker.task'
 
 base_options = mp.tasks.BaseOptions(model_asset_path=model_path)
 option = vision.HandLandmarkerOptions(
@@ -126,7 +135,7 @@ while cap.isOpened():
             pyautogui.rightClick()
             Gesture_Accuracy_list = clear_list(Gesture_Accuracy_list)
 
-    cv2.imshow("Handmarker", fliped)
+    cv2.imshow("Vision Control", fliped)
     px = cx
     py = cy
 
