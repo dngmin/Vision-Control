@@ -50,10 +50,13 @@ python main.py
 ## 使用方法
 - **基本ジェスチャー・マウスポインター移動**
 <img src="./assets/Images/basic.png" alt="basic" width="500">
+
 - **左クリック**
 <img src="./assets/Images/L-click.png" alt="L-click" width="500">
+
 - **右クリック**
 <img src="./assets/Images/R-click.png" alt="R-click" width="500">
+
 - **ダブルクリック**
 <img src="./assets/Images/D-click.png" alt="D-click" width="500">
 
