@@ -13,7 +13,7 @@
 
 ## Demo / デモ操作
 
-<video src="./assets/Images/demo.mov" width="90%" autoplay loop muted></video>
+<video src="./assets/Images/demo.mp4" width="90%" autoplay loop muted></video>
 
 このデモ動画では、<b>[XbitLabsのAim Trainer](https://www.xbitlabs.com/ja/aim-trainer/)</b>を使用してテストを行っている。
 
