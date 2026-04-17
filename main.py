@@ -78,7 +78,7 @@ def clear_list(target_list):
 
 Gesture_Accuracy_list = clear_list(Gesture_Accuracy_list)
 
-model_path = 'assets/model/hand_landmarker.task'
+model_path = 'models/hand_landmarker.task'
 
 base_options = mp.tasks.BaseOptions(model_asset_path=model_path)
 option = vision.HandLandmarkerOptions(
