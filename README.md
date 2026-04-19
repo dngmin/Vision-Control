@@ -72,5 +72,9 @@ python v1_python_only.py
 
 ## 今後の課題 (Future Work)
 - 処理速度改善のためc++へリファクトリング
+    - [x] Udpを用いてpython mediapipeからC++にデータ送信
+        - pythonのstruct.pack(8-byte binary pack)を用いて送信量最小化
+    - [ ] OS Native APIを使用してlow-levelでの操作
+    - [ ] フィルターアルゴリズムを使用してカメラやmediapipe(AI)から生じるノイズ管理
 - モニターより画像の解像度が高い場合での対応
 - 画像に仮想のマウスパッドを描き、認識範囲の可視化
