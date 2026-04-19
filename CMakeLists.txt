@@ -12,9 +12,15 @@ add_executable(${PROJECT_NAME} src/cpp/main.cpp)
 
 # for Apple
 if (APPLE)
+    find_library(CORE_FOUNDATION CoreFoundation REQUIRED)
     find_library(CORE_GRAPHICS CoreGraphics REQUIRED)
-    
-    target_link_libraries(${PROJECT_NAME} PRIVATE ${CORE_GRAPHICS})
+    find_library(APP_SERVICES ApplicationServices REQUIRED)
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+    ${CORE_FOUNDATION}
+    ${CORE_GRAPHICS}
+    ${APP_SERVICES}
+    )
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${OpenCV_LIBS} SFML::Graphics SFML::Network)

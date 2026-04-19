@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 from mediapipe.tasks.python import vision
 import socket
+import struct
 
 # mediapipe hand landmarker model & setting
 model_path = "models/hand_landmarker.task"
@@ -24,11 +25,14 @@ width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
 height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
 timestamp_ms = 0
 
+cam_size = struct.pack("ff", cap.get(cv2.CAP_PROP_FRAME_WIDTH), cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+sock.sendto(cam_size, server_address)
+
 while cap.isOpened():
     ret, frame = cap.read()
     if not ret: break
 
-    points = ""
+    points = []
 
     frame = cv2.flip(frame, 1)
     rgb = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
@@ -40,10 +44,11 @@ while cap.isOpened():
     if result.hand_landmarks:
         for landmarks in result.hand_landmarks:
             for i in [4,8,12,16,20]:
-                cx, cy = int(landmarks[i].x*frame.shape[1]), int(landmarks[i].y*frame.shape[0])
-                points+= f"{cx} {cy} "
-    
-        sock.sendto(points.encode(), server_address)
+                cx, cy = landmarks[i].x, landmarks[i].y
+                points.append(cx)
+                points.append(cy)
+        data = struct.pack("10f",*points)
+        sock.sendto(data, server_address)
         
 cap.release()
 cv2.destroyAllWindows()
