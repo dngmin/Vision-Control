@@ -1,0 +1,4 @@
+# Install : pip install -r requirements.txt
+opencv-python>=4.10.0
+mediapipe>=0.10.11
+pyautogui>=0.9.54

@@ -35,13 +35,13 @@
 ### インストール手順
 ```bash
 git clone https://github.com/dngmin/Vision-Control.git
-cd Vision-Control
+cd Vision-Control/demo
 pip install -r requirements.txt
 ```
 
 ### 実行方法
 ```bash
-python main.py
+python v1_python_only.py
 ```
 
 ## 機能
