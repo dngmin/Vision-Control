@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include <vector>
+#include <array>
 // SFML(socket, gui)
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
@@ -78,6 +78,17 @@ void MouseMove(float x, float y)
 
 int main()
 {
+    // Kalman Filterで手ブレ補正
+
+    // 初期化
+    // 状態予測値
+    sf::Vector2f Predict;
+    // F；運動モデル：ランダムウォークモデル、H：観測行列
+    std::array<std::array<int, 2>, 2> F, H;
+    F = {{{1, 0}, {0, 1}}};
+    H = {{{1, 0}, {0, 1}}};
+    // P；誤差共分散、Q：プロセスノイズ、R：センサーノイズ、K：Kalman Gain
+    float P = 1.f, Q = 1e-5, R = 1e-4, K;
   
     screen_size cam_size;
     screen_size monitor_size = get_monitor_size();
@@ -91,11 +102,13 @@ int main()
     std::optional<sf::IpAddress> sender;
     unsigned short port;
 
-    // get cam_size
+    // cam_size取得
     if (socket.receive(&cam_size, sizeof(cam_size), received, sender, port) == sf::Socket::Status::Done)
     {
         std::cout << cam_size.width << " " << cam_size.height << std::endl;
     }
+    // finger_pointss初期化
+    if (socket.receive(&finger_points, sizeof(finger_points), received, sender, port) == sf::Socket::Status::Done)
     socket.setBlocking(false);
     std::cout << monitor_size.width << " " << monitor_size.height << std::endl;
 
@@ -108,16 +121,37 @@ int main()
     sf::CircleShape ring(10.f);
     sf::CircleShape pinky(10.f);
     
-    
+
 
 
     // main loop
     while (window.isOpen())
     {
+        // Kalman Filterの実装
+        // ランダムウォークモデルであるため、予測値＝前回の観測値
+        // 予測
+        Predict.x = finger_points.ix;
+        Predict.y = finger_points.iy;
         if (socket.receive(&finger_points, sizeof(finger_points), received, sender, port) == sf::Socket::Status::Done)
         {
+            // 誤差共分散予測
+            P += Q;
+
+            // 観測
             finger_points.x_align(monitor_size.width);
             finger_points.y_align(monitor_size.height);
+
+            // Kalman Gain計算
+            K = P / (P + R);
+
+            // 状態更新
+            finger_points.ix = Predict.x + K*(finger_points.ix - Predict.x);
+            finger_points.iy = Predict.y + K*(finger_points.iy - Predict.y);
+
+            // 共分散更新
+            P = (1.f - K)*P;
+
+
             MouseMove(finger_points.ix, finger_points.iy);
         }
 

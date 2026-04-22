@@ -26,7 +26,7 @@
 - **ジェスチャー認識** : 正確なジェスチャー認識のため一定時間(フレーム)以上同じジェスチャーであるかで判定する。(ユーザー調整可)
 
 
-## セットアップ
+## セットアップ(Demo版)
 ### 動作環境
 - Python : 3.12以上(最新バージョンは互換性のためお勧めしない)
 - OS : Windows / macOS
@@ -67,14 +67,24 @@ python v1_python_only.py
 画像は[Google Gemini(AI)](https://gemini.google.com/app?hl=ja)より生成しました。
 
 ## 使用技術
-- 言語 : Python(C++20準備中)
-- ライブラリ : OpenCV, MediaPipe, pyautogui
+- Demo
+    - 言語 : Python
+    - ライブラリ : OpenCV, MediaPipe, pyautogui
+    - OS : macOS
+- アルファ版
+    - 言語：C++, Python
+    - C++ Side
+        - ライブラリ：SFML, OpenCV, CoreGraphics, ApplicationServices
+    - Python Side:
+        - ライブラリ：Mediapipe, Socket, Struct
+    - ビルド：CMake
+    - OS : macOS
 
 ## 今後の課題 (Future Work)
 - 処理速度改善のためc++へリファクトリング
     - [x] Udpを用いてpython mediapipeからC++にデータ送信
         - pythonのstruct.pack(8-byte binary pack)を用いて送信量最小化
-    - [ ] OS Native APIを使用してlow-levelでの操作
-    - [ ] フィルターアルゴリズムを使用してカメラやmediapipe(AI)から生じるノイズ管理
-- モニターより画像の解像度が高い場合での対応
+    - [x] OS Native APIを使用してlow-levelでのマウス操作
+    - [x] フィルターアルゴリズムを使用してカメラやmediapipe(AI)から生じるノイズ管理
+    - [ ] ジェスチャー認識よりマウスボタン入力機能追加
 - 画像に仮想のマウスパッドを描き、認識範囲の可視化
